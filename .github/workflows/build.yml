@@ -1,36 +1,125 @@
-# This is a basic workflow to help you get started with Actions
+name: Android CI
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    permissions:
+      contents: write
+      deployments: write
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+        continue-on-error: true
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Enable Gradle daemon & cache
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          mkdir -p ~/.gradle
+          echo "org.gradle.daemon=true" >> ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > app/release-key.keystore
+
+      - name: Build with Gradle
+        run: ./gradlew assembleRelease --stacktrace --info
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Show Gradle logs if build fails
+        if: failure()
+        run: cat app/build/reports/*/*.html || true
+
+      - name: Run unit tests
+        run: ./gradlew test
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          sdk-version: '34'
+          build-tools-version: '34.0.0'
+
+      - name: Enable KVM group perms
+        run: |
+          sudo apt-get install -y cpu-checker
+          kvm-ok || echo "KVM is not available"
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      # - name: Start Emulator in Headless Mode
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 34
+      #     target: google_apis
+      #     arch: x86_64
+      #     profile: pixel_4
+      #     headless: true
+      #     disable-animations: true
+      #     ram-size: 4096M
+      #     script: |
+      #       adb wait-for-device
+      #       adb shell settings put global window_animation_scale 0
+      #       adb shell settings put global transition_animation_scale 0
+      #       adb shell settings put global animator_duration_scale 0
+      #       ./gradlew connectedAndroidTest
+
+      - name: Install apksigner
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openjdk-17-jdk apksigner
+          export ANDROID_HOME=$HOME/Android/Sdk
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/build-tools/34.0.0:$PATH
+
+      - name: Sign APK
+        run: |
+          apksigner sign --ks app/release-key.keystore --ks-key-alias ${{ secrets.KEY_ALIAS }} --ks-pass pass:${{ secrets.KEYSTORE_PASSWORD }} --key-pass pass:${{ secrets.KEY_PASSWORD }} --v2-signing-enabled true --v3-signing-enabled true app/build/outputs/apk/release/app-release.apk
+
+      - name: Verify APK Signature
+        run: |
+          apksigner verify --verbose --print-certs app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload APK to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/release/app-release.apk
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup Keystore1
+        if: always()
+        run: rm -f app/release-key.keystore
