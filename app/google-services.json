@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "672367967950",
+    "project_id": "mihia-camera-wg",
+    "storage_bucket": "mihia-camera-wg.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:672367967950:android:fa2afa4bdfa849adbe9a9f",
+        "android_client_info": {
+          "package_name": "com.example.marchapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpV-7dlqII2n--s9mjg3imeYZ3PE6khM0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">March Application</string>
+    <string name="language_switch">EN/JP</string>
+    <string name="catch_mazda">Catch Mazda</string>
+    <string name="car_selection">Car Selection</string>
+    <string name="car_list">Car List</string>
+    <string name="catch_list">Catch List</string>
+    <string name="details">Details</string>
+    <string name="history">History</string>
+</resources>

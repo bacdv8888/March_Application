@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">マーチアプリケーション</string>
+    <string name="language_switch">JP/EN</string>
+    <string name="catch_mazda">キャッチマツダ</string>
+    <string name="car_selection">車の選択</string>
+    <string name="car_list">車のリスト</string>
+    <string name="catch_list">キャッチリスト</string>
+    <string name="details">詳細</string>
+    <string name="history">履歴</string>
+</resources>
