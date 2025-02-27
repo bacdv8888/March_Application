@@ -1,9 +1,10 @@
-package com.example.marchapplication.ui.screens
+package com.example.marchapplication.ViewModel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.marchapplication.Data.AppDatabase
+import com.example.marchapplication.utils.LocaleHelper
 import com.example.marchapplication.utils.SpeakerUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,30 @@ class HistoricalInformationViewModel(application: Application) : AndroidViewMode
     private val _textJP = MutableStateFlow("読み込み中.....")
     val textJP: StateFlow<String> = _textJP
 
+    private val _currentLanguage = MutableStateFlow("en")
+    val currentLanguage: StateFlow<String> = _currentLanguage
+
+    private val _isPlaying = MutableStateFlow(false)
+    val isPlaying: StateFlow<Boolean> = _isPlaying
+
+    private val _isPaused = MutableStateFlow(false)
+    val isPaused: StateFlow<Boolean> = _isPaused
+
+    init {
+        viewModelScope.launch {
+            LocaleHelper.currentLanguageFlow.collect { language ->
+                _currentLanguage.value = language
+            }
+        }
+
+        speakerUtils.setOnCompletionListener {
+            _isPlaying.value = false
+            _isPaused.value = false
+        }
+    }
+
+
+
     fun loadCarData(folderName: String) {
         viewModelScope.launch {
             _avatarResId.value = photoDao.getAvatarForCar(folderName).firstOrNull()
@@ -34,11 +59,19 @@ class HistoricalInformationViewModel(application: Application) : AndroidViewMode
         }
     }
 
-    fun speakText(text: String) {
-        speakerUtils.speak(text)
+    fun speakText() {
+        val currentLang = _currentLanguage.value
+        val textToSpeak = if (currentLang == "en") _textEN.value else _textJP.value
+        speakerUtils.updateLanguage(currentLang)
+        speakerUtils.speak(textToSpeak)
+
+        _isPlaying.value = true
+        _isPaused.value = false
     }
 
     fun stopReading() {
         speakerUtils.stop()
+        _isPlaying.value = false
+        _isPaused.value = false
     }
 }

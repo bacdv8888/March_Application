@@ -67,14 +67,16 @@ fun TextFieldWithIcon(
 @Composable
 fun CustomTextField(
     label: String,
-    value: MutableState<String>
+    value: String,
+    onValueChange: (String) -> Unit = {} // ✅ Thêm tham số onValueChange mặc định
 ) {
     val configuration = LocalConfiguration.current
-    val adaptiveFontSize = (configuration.screenWidthDp * 0.02).sp // Cỡ chữ chiếm 5% chiều rộng
+    val adaptiveFontSize = (configuration.screenWidthDp * 0.02).sp
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min) // ✅ Giữ chiều cao nhỏ nhất có thể
+            .height(IntrinsicSize.Min)
             .background(Color.Transparent),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -85,8 +87,8 @@ fun CustomTextField(
             modifier = Modifier.padding(end = 8.dp)
         )
         TextField(
-            value = value.value,
-            onValueChange = { value.value = it },
+            value = value,
+            onValueChange = onValueChange, // ✅ Sử dụng tham số mới
             textStyle = TextStyle(fontSize = adaptiveFontSize, color = Color.Black),
             modifier = Modifier
                 .weight(1f)
@@ -101,6 +103,7 @@ fun CustomTextField(
         )
     }
 }
+
 
 /*
 @Composable

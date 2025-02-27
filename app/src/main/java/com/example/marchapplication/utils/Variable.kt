@@ -2,7 +2,7 @@ package com.example.marchapplication.utils
 
 
 data class CarAlbum(
-    val carName: String, // Đảm bảo đúng tên thuộc tính
+    val carName: String,
     val imageResId: Int
 )
 val CAR_LIST = listOf(

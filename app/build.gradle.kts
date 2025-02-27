@@ -65,20 +65,17 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
     implementation ("com.google.accompanist:accompanist-navigation-animation:0.31.5-beta")
 
-    implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
-    implementation("com.google.firebase:firebase-analytics")
-    implementation ("androidx.exifinterface:exifinterface:1.3.6")
-
-    implementation ("com.google.firebase:firebase-auth:21.0.1")
-
     implementation ("androidx.exifinterface:exifinterface:1.3.6")
 
     // Database
     implementation ("androidx.room:room-runtime:2.6.1")
-    implementation ("androidx.room:room-runtime:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     kapt ("androidx.room:room-compiler:2.6.1")
 
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+    // Location
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    // Icon
+    implementation ("com.google.android.material:material:1.4.0")
 }

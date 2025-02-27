@@ -13,8 +13,25 @@ val carInfoList = listOf(
     CarInfo(
         carName = "CX-90",
         imageResId = R.drawable.a,
-        textEN = "English text for CX-90",
-        textJP = "日本語テキスト CX-90"
+        textEN = "The CX-90 was revealed on 31 January 2023, for the North American market," +
+                " while a release in the Australian and Middle Eastern markets occurred later during 2023." +
+                "[7][10] The CX-90 is available with a choice of six, seven, or eight-passenger seat configurations." +
+                " The CX-70, the two-row variant with five seats, was revealed on 30 January 2024 in North America." +
+                " The CX-70 differs from the CX-90 by its front and rear bumper designs, black exterior accents replacing chrome," +
+                " unique wheel designs, and differing interior color scheme options.[11]" +
+                "With the use of the rear-wheel-drive-biased large vehicle platform, " +
+                "the CX-90 and CX-70 are placed into the brand's internal Large Product Group category." +
+                " According to Mazda, the CX-90 addresses many of the weaknesses of the CX-9 such as its small interior space.[12]" +
+                "The CX-90 and CX-70 are also equipped with the Kinematic Posture Control technology, " +
+                "a feature originally developed for the 2022 MX-5 Miata and also present in the similar CX-60." +
+                " The software suppresses the vehicle's body lift during cornering to improve stability and traction," +
+                " helping occupants maintain a natural posture.[5]"+
+                "The CX-9 was discontinued in North America, replaced by the CX-90 and CX-70." +
+                "[8] Like its predecessor, the CX-90 will not be sold in Jap",
+
+        textJP = "これは日本語の文章です。日々の生活に関して、健康を維持することは非常に重要です。" +
+                "適度な運動やバランスが取れた食事が、体調を整えるために役立ちます。" +
+                "また、良質な睡眠を確保することで、心身の調和が保たれます。"
     ),
     CarInfo(
         carName = "CX-80",

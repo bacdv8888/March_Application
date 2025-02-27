@@ -8,11 +8,13 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.exifinterface.media.ExifInterface
 import com.example.marchapplication.Data.Photo
 import com.example.marchapplication.Data.PhotoDao
 import com.example.marchapplication.R
+import com.example.marchapplication.utils.LocationHelper.getDetailedAddress
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -57,7 +59,11 @@ fun saveImageToGallery(context: Context, bitmap: Bitmap): Uri? {
 
     return imageUri
 }
-fun saveImageToAppFolder(context: Context, imageUri: Uri, folderName: String, photoDao: PhotoDao) {
+fun saveImageToAppFolder(
+    context: Context,
+    imageUri: Uri,
+    folderName: String,
+    photoDao: PhotoDao, ) {
     try {
 
         val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
@@ -97,31 +103,43 @@ fun saveImageToAppFolder(context: Context, imageUri: Uri, folderName: String, ph
         newExif.setAttribute(ExifInterface.TAG_DATETIME, dateString)
         newExif.setAttribute(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL.toString())
         newExif.saveAttributes()
-
         val avatarResId = getAvatarForFolder(folderName)
 
         // Find the CarInfo object for the given folderName
         val carInfo = carInfoList.find { it.carName == folderName }
         val textEN = carInfo?.textEN ?: ""
         val textJP = carInfo?.textJP ?: ""
-
         val imagePath = file.absolutePath
         println("Image saved to $imagePath with EXIF TAG_DATETIME = $dateString")
 
-        // Lưu đường dẫn ảnh vào database
-        GlobalScope.launch(Dispatchers.IO) {
-            val photo = Photo(
-                NameProduct =folderName,
-                FilePath = imagePath,
-                CarName = folderName,
-                Image = avatarResId,
-                CapturedBy = "",
-                DateCaptured = dateString,
-                Location = "",
-                TextEN = textEN,
-                TextJN = textJP,
-            )
-            photoDao.insertPhoto(photo)
+        // Save to Room database
+        LocationHelper.fetchLocation(context) { location ->
+            val locationString = if (location != null) {
+                val coordinates = "${location.latitude},${location.longitude}"
+                Log.d("Location", coordinates)
+                val detailedAddress = getDetailedAddress(context, location.latitude, location.longitude)
+                if (!detailedAddress.isNullOrEmpty()) {
+                    detailedAddress
+                } else {
+                    "${location.latitude},${location.longitude}"
+                }
+            } else {
+                "Unknown"
+            }
+            GlobalScope.launch(Dispatchers.IO) {
+                val photo = Photo(
+                    NameProduct =folderName,
+                    FilePath = imagePath,
+                    CarName = folderName,
+                    Image = avatarResId,
+                    CapturedBy = "",
+                    DateCaptured = dateString,
+                    Location = locationString,
+                    TextEN = textEN,
+                    TextJP = textJP,
+                )
+                photoDao.insertPhoto(photo)
+            }
         }
 
     } catch (e: Exception) {

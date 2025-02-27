@@ -5,11 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PhotoDao {
+    // Thêm ảnh mới
     @Insert
-    suspend fun insertPhoto(photo: Photo) // Thêm ảnh mới
-
-    @Query("SELECT * FROM photos")
-    suspend fun getAllPhotos(): List<Photo> // Lấy tất cả ảnh
+    suspend fun insertPhoto(photo: Photo)
     // Lấy ảnh dựa trên NameProduct
     @Query("SELECT * FROM photos WHERE NameProduct = :folderName")
     suspend fun getImagesByCar(folderName: String): List<Photo>
@@ -25,14 +23,11 @@ interface PhotoDao {
     // Truy vấn text
     @Query("SELECT TextEN FROM photos WHERE NameProduct = :folderName LIMIT 1")
     fun getTextENForCar(folderName: String): Flow<String>
-
-    @Query("SELECT TextJN FROM photos WHERE NameProduct = :folderName LIMIT 1")
+    @Query("SELECT TextJP FROM photos WHERE NameProduct = :folderName LIMIT 1")
     fun getTextJPForCar(folderName: String): Flow<String>
-
     // Ghi thông tin vào hình ảnh
     @Update
     suspend fun updatePhoto(photo: Photo)
-
     @Delete
     suspend fun deletePhoto(photo: Photo) // Xóa ảnh
 }

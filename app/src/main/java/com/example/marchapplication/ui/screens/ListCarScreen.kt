@@ -1,7 +1,6 @@
 package com.example.marchapplication.ui.screens
 
 import android.net.Uri
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,42 +26,50 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.ui.layout.ContentScale
 import com.example.marchapplication.R
 import androidx.compose.foundation.lazy.grid.items
+
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import com.example.marchapplication.Data.AppDatabase
+import com.example.marchapplication.ViewModel.CarViewModel
 import com.example.marchapplication.ui.components.TextCustom
 import com.example.marchapplication.utils.CAR_LIST
 
+
 @Composable
-fun ListCarScreen(navController: NavController) {
+fun ListCarScreen(
+    navController: NavController) {
     val context = LocalContext.current
 
     val database = remember { AppDatabase.getDatabase(context) }
     val photoDao = remember { database.photoDao() }
 
+    val configuration = LocalConfiguration.current
+    val paddingHeight = configuration.screenHeightDp.dp * 0.02f
+    val paddingWidth = configuration.screenWidthDp.dp * 0.06f
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = 20.dp)
+            .padding(top = paddingHeight)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth() .padding(start = paddingWidth,bottom = paddingHeight,end = paddingWidth),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TextCustom(
                 text = stringResource(id = R.string.car_list),
-                modifier = Modifier.padding(start = 20.dp),
-                fontSizeFactor = 0.04f
+                modifier = Modifier.padding(top = paddingHeight),
+                fontSizeFactor = 0.03f
             )
 
             ButtonCustom(
                 text = "Back",
                 onClick = { navController.popBackStack() },
-                modifier = Modifier.padding(end = 20.dp),
+                modifier = Modifier.padding(),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),
@@ -71,16 +78,16 @@ fun ListCarScreen(navController: NavController) {
         }
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
-            contentPadding = PaddingValues(8.dp)
+            columns = GridCells.Fixed(4),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = paddingWidth, end = paddingWidth, bottom = paddingHeight),
+            contentPadding = PaddingValues(10.dp)
         ) {
             items(CAR_LIST) { carName ->
                 // Lấy ảnh từ database
-
                 val avatarResId by photoDao.getAvatarForCar(carName).collectAsState(initial = null)
                 val imageCount by photoDao.getImageCountForCar(carName).collectAsState(initial = 0)
-
                 CarGridItem(
                     folderName = carName,
                     avatarResId = avatarResId ?: R.drawable.defaults, // Nếu không có ảnh, dùng ảnh mặc định
@@ -103,25 +110,28 @@ fun CarGridItem(
     imageCount: Int,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .padding(4.dp)
-            .fillMaxWidth()
-            .aspectRatio(1f)
-            .clickable { onClick() },
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = avatarResId), // Hiển thị ảnh từ drawable
-            contentDescription = null,
-            modifier = Modifier.matchParentSize(),
-            contentScale = ContentScale.Fit
-        )
-
+        Box(
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clickable { onClick() },
+        ) {
+            Image(
+                painter = painterResource(id = avatarResId),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.Fit
+            )
+        }
         TextCustom(
             text = "$folderName ($imageCount Image)",
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .padding(10.dp),
+            fontSizeFactor = 0.015f
         )
     }
 }

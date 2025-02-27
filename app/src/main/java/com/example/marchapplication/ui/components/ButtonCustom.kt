@@ -1,5 +1,6 @@
 package com.example.marchapplication.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
@@ -19,13 +20,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.PathBuilder
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.marchapplication.R
 
 
 @Composable
@@ -38,17 +42,11 @@ fun ButtonCustom(
     textColor: Color = Color.White,
     buttonWidthFactor: Float = 0.15f,
     buttonHeightFactor: Float = 0.06f,
-    //buttonWidth : Dp = 100.dp,
-    //buttonHeight: Dp = 60.dp,
-    fontSizeFactor: Float = 0.025f
-    //fontSize: TextUnit = 15.sp
+    fontSizeFactor: Float = 0.025f,
+    enabled: Boolean = true
 ) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
-
-    //val configuration = LocalConfiguration.current
-    //val buttonWidth = configuration.screenWidthDp.dp * buttonWidthFactor
-    //val buttonHeight = configuration.screenHeightDp.dp * buttonHeightFactor
 
     val buttonWidth = (screenWidth * buttonWidthFactor).dp.coerceAtLeast(120.dp)
     val buttonHeight = (screenWidth * buttonHeightFactor).dp.coerceAtLeast(48.dp)
@@ -61,7 +59,8 @@ fun ButtonCustom(
         shape = RoundedCornerShape(cornerRadius),
         modifier = modifier
             .width(buttonWidth)
-            .height(buttonHeight)
+            .height(buttonHeight),
+        enabled = enabled
     ) {
         Text(
             text = text,
@@ -76,7 +75,6 @@ fun TextCustom(
     modifier: Modifier = Modifier,
     textColor: Color = Color.Black,
     fontSizeFactor: Float = 0.02f,
-    //fontSize: TextUnit = 20.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     textAlign: TextAlign = TextAlign.Start
 ) {
@@ -115,6 +113,8 @@ fun ButtonIcon(
 
 @Composable
 fun ButtonIconPlay(
+    isPlaying: Boolean,
+    isPaused: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -122,14 +122,23 @@ fun ButtonIconPlay(
         onClick = onClick,
         modifier = modifier
             .size(50.dp)
-            .border(2.dp, Color.Black, shape = CircleShape) // Add circular border
+            .border(2.dp, Color.Black, shape = CircleShape)
             .background(Color.White, shape = CircleShape)
     ) {
-        Icon(
-            imageVector = Icons.Default.PlayArrow,
-            contentDescription = "Play",
-            tint = Color.Black,
-            modifier = Modifier.size(40.dp)
-        )
+        if (isPlaying) {
+            Image(
+                painter = painterResource(id = R.drawable.pause_24),
+                contentDescription = "Pause",
+                modifier = Modifier.size(40.dp)
+            )
+        } else {
+            // Dù đang tạm dừng hay chưa đọc, hiển thị icon play
+            Icon(
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = "Play",
+                tint = Color.Black,
+                modifier = Modifier.size(40.dp)
+            )
+        }
     }
 }

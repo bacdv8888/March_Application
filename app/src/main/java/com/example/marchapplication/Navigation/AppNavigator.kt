@@ -15,46 +15,27 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.marchapplication.ui.screens.CreateAccountScreen
+import com.example.marchapplication.ViewModel.CarViewModel
+import com.example.marchapplication.ViewModel.HistoricalInformationViewModel
 import com.example.marchapplication.ui.screens.HistoricalInformationScreen
-import com.example.marchapplication.ui.screens.HistoricalInformationViewModel
 import com.example.marchapplication.ui.screens.HomeScreen
 import com.example.marchapplication.ui.screens.InformationCarScreen
 import com.example.marchapplication.ui.screens.ListCarImageScreen
 import com.example.marchapplication.ui.screens.ListCarScreen
-import com.example.marchapplication.ui.screens.LoginScreen
 import com.example.marchapplication.ui.screens.ModelSettingScreen
 
 @Composable
 fun AppNavigator(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val historicalInformationViewModel: HistoricalInformationViewModel = viewModel()
+    val carViewModel: CarViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = "homeScreen",
         modifier = modifier
     ) {
-        composable("loginScreen",
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn()
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut()
-            }
-        ) {
-            LoginScreen(navController)
-        }
-        composable("createAccountScreen",
-            enterTransition = {
-                slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn()
-            },
-            exitTransition = {
-                slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut()
-            }
-        ) {
-            CreateAccountScreen(navController)
-        }
+
         composable("homeScreen",
             enterTransition = {
                 slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = tween(500)) + fadeIn()
@@ -81,6 +62,7 @@ fun AppNavigator(modifier: Modifier = Modifier) {
             val folderName = backStackEntry.arguments?.getString("folderName") ?: ""
             HistoricalInformationScreen(navController, folderName, historicalInformationViewModel)
         }
+
         composable("informationCarScreen/{imagePath}",
             enterTransition = {
                 slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500))
@@ -90,7 +72,7 @@ fun AppNavigator(modifier: Modifier = Modifier) {
             }
         ) {backStackEntry ->
             val imagePath = backStackEntry.arguments?.getString("imagePath")
-            InformationCarScreen(navController, imagePath)
+            InformationCarScreen(navController, imagePath,carViewModel)
         }
 
         composable(
@@ -104,7 +86,7 @@ fun AppNavigator(modifier: Modifier = Modifier) {
         ) { backStackEntry ->
             // Lấy "folderName" từ arguments
             val folderName = backStackEntry.arguments?.getString("folderName") ?: ""
-            ListCarImageScreen(navController, folderName)
+            ListCarImageScreen(navController, folderName, carViewModel)
         }
 
         composable("listCarScreen",

@@ -14,7 +14,7 @@ data class Photo(
     val DateCaptured: String,
     val Location: String,
     val TextEN: String,
-    val TextJN: String?,
+    val TextJP: String?,
 )
 
 

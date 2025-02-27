@@ -2,28 +2,28 @@ package com.example.marchapplication.ui.screens
 
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+
 import androidx.navigation.NavController
-import com.example.marchapplication.ui.components.ButtonIcon
+
 
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 
-import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -31,42 +31,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.marchapplication.Data.AppDatabase
-import com.example.marchapplication.Data.Photo
 import com.example.marchapplication.R
+import com.example.marchapplication.ViewModel.CarViewModel
 import com.example.marchapplication.ui.components.ButtonCustom
 import com.example.marchapplication.ui.components.TextCustom
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+
 import java.io.File
 
 @Composable
 fun ListCarImageScreen(
     navController: NavController,
-    folderName: String
+    folderName: String,
+    viewModel: CarViewModel
 ) {
-    val context = LocalContext.current
-    val database = remember { AppDatabase.getDatabase(context) }
-    val photoDao = remember { database.photoDao() }
+    val imageList by viewModel.imageList.collectAsState()
 
-    val imageList = remember { mutableStateOf(emptyList<Photo>()) }
-
-    val configuration = LocalConfiguration.current
-    val PaddingHeight = configuration.screenHeightDp.dp * 0.02f
-    val PaddingWidth = configuration.screenWidthDp.dp * 0.05f
-
-    LaunchedEffect(Unit) {
-        val images = withContext(Dispatchers.IO) {
-            photoDao.getImagesByCar(folderName)
-        }
-        imageList.value = images
+    LaunchedEffect(folderName) {
+        viewModel.loadImagesByCar(folderName)
     }
+    val configuration = LocalConfiguration.current
+    val paddingHeight = configuration.screenHeightDp.dp * 0.02f
+    val paddingWidth = configuration.screenWidthDp.dp * 0.06f
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = PaddingHeight),
+            .padding(top = paddingHeight),
     ) {
         // Thanh tiêu đề
         Row(
@@ -79,14 +70,14 @@ fun ListCarImageScreen(
             TextCustom(
                 text = "$folderName " + stringResource(id = R.string.catch_list),
                 modifier = Modifier
-                    .padding(start = PaddingWidth),
+                    .padding(start = paddingWidth),
                 fontSizeFactor = 0.03f
             )
             ButtonCustom(
                 text = "Back",
                 onClick = { navController.popBackStack()},
                 modifier = Modifier
-                    .padding(end = PaddingWidth),
+                    .padding(end = paddingWidth),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),
@@ -98,7 +89,7 @@ fun ListCarImageScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically)
         {
-            if (imageList.value.isEmpty()) {
+            if (imageList.isEmpty()) {
             Box(modifier = Modifier
                 .weight(5f)
                 .fillMaxSize(),
@@ -108,13 +99,13 @@ fun ListCarImageScreen(
             }
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Fixed(4),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = PaddingWidth),
-                contentPadding = PaddingValues(5.dp)
+                    .padding(start = paddingWidth, end = paddingWidth, bottom = paddingHeight),
+                contentPadding = PaddingValues(10.dp)
             ) {
-                items(imageList.value) { photo ->
+                items(imageList) { photo ->
                     ImageGridItemWithTime(
                         imagePath = photo.FilePath,
                         displayTime = photo.DateCaptured
@@ -139,7 +130,7 @@ fun ImageGridItemWithTime(
         Box(
             modifier = Modifier
                 //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
-                .padding(4.dp)
+                .padding(10.dp)
                 .fillMaxSize()
                 .aspectRatio(1f)
                 .clickable { onClick(imagePath, displayTime)
@@ -152,26 +143,17 @@ fun ImageGridItemWithTime(
                     .build(),
                 contentDescription = null,
                 modifier = Modifier
-                    //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
         }
         if (displayTime.isNotEmpty()) {
             TextCustom(
-                text = "$displayTime",
-                modifier = Modifier
+                text = displayTime.toString(),
+                        modifier = Modifier
                     .padding(3.dp),
-                        //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
+                fontSizeFactor = 0.015f
             )
         }
     }
-}
-
-fun isImageFile(file: File): Boolean {
-    val name = file.name.lowercase()
-    return (name.endsWith(".jpg")
-            || name.endsWith(".jpeg")
-            || name.endsWith(".png")
-            || name.endsWith(".bmp") || name.endsWith(".webp"))
 }

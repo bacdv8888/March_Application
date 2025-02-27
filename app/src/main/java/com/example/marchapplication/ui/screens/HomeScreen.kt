@@ -11,10 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
@@ -31,7 +28,7 @@ import com.example.marchapplication.utils.rememberCameraState
 import com.example.marchapplication.ui.components.ButtonCustom
 
 import com.example.marchapplication.ui.components.TextCustom
-import com.yourapp.utils.LocaleHelper
+import com.example.marchapplication.utils.LocaleHelper
 
 
 @Composable
@@ -42,8 +39,7 @@ fun HomeScreen(navController: NavController) {
 
     val configuration = LocalConfiguration.current
     val paddingHeight = configuration.screenHeightDp.dp * 0.02f
-    val paddingWidth = configuration.screenWidthDp.dp * 0.05f
-
+    val paddingWidth = configuration.screenWidthDp.dp * 0.06f
     Column (
         modifier = Modifier
             //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
@@ -54,7 +50,7 @@ fun HomeScreen(navController: NavController) {
         TextCustom(
             text = stringResource(id = R.string.catch_mazda),
             modifier = Modifier.padding(start = paddingWidth),
-            fontSizeFactor = 0.04f
+            fontSizeFactor = 0.03f
         )
         Spacer(modifier = Modifier.weight(1f))
         Row(
@@ -95,14 +91,14 @@ fun HomeScreen(navController: NavController) {
             ButtonCustom(
                 text = stringResource(id = R.string.language_switch),
                 onClick = {
-                    val currentLanguage = LocaleHelper.getSavedLanguage(context) // Lấy ngôn ngữ hiện tại
-                    val newLanguage = if (currentLanguage == "en") "ja" else "en" // Đổi ngôn ngữ
+                    val currentLanguage = LocaleHelper.getSavedLanguage(context)
+                    val newLanguage = if (currentLanguage == "en") "ja" else "en"
 
-                    LocaleHelper.setLocale(context, newLanguage) // Áp dụng ngôn ngữ mới
-                    LocaleHelper.restartActivity(context as Activity)
-                          },
-                modifier = Modifier
-                    .padding(end = paddingWidth),
+                    LocaleHelper.setLocale(context, newLanguage)
+
+                    (context as Activity).recreate()
+                },
+                modifier = Modifier.padding(end = paddingWidth),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),

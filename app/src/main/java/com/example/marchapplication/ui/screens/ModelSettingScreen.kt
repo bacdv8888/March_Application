@@ -2,6 +2,7 @@ package com.example.marchapplication.ui.screens
 
 import android.Manifest
 import android.net.Uri
+import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +23,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,13 +41,17 @@ import com.example.marchapplication.Data.AppDatabase
 import com.example.marchapplication.R
 import com.example.marchapplication.ui.components.TextCustom
 import com.example.marchapplication.utils.CAR_LIST
+import com.example.marchapplication.utils.LocationHelper
 
 import com.example.marchapplication.utils.launchCamera
 import com.example.marchapplication.utils.rememberCameraState
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ModelSettingScreen(navController: NavController, imageUri: Uri?) {
+fun ModelSettingScreen(
+    navController: NavController,
+    imageUri: Uri?){
 
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf(CAR_LIST[0]) }
@@ -56,19 +62,20 @@ fun ModelSettingScreen(navController: NavController, imageUri: Uri?) {
     val database = remember { AppDatabase.getDatabase(context) }
     val photoDao = remember { database.photoDao() }
 
+    val isSaving = remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
-    val PaddingHeight = configuration.screenHeightDp.dp * 0.02f
-    val PaddingWidth = configuration.screenWidthDp.dp * 0.05f
+    val paddingHeight = configuration.screenHeightDp.dp * 0.02f
+    val paddingWidth = configuration.screenWidthDp.dp * 0.06f
     Column (
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = 20.dp),
+            .padding(top = paddingHeight),
     ) {
         TextCustom(
             text = stringResource(id = R.string.car_selection),
-            modifier = Modifier.padding(start = PaddingWidth),
-            fontSizeFactor = 0.04f
+            modifier = Modifier.padding(start = paddingWidth),
+            fontSizeFactor = 0.03f
         )
         Spacer(modifier = Modifier.weight(1f))
         Column(
@@ -102,7 +109,7 @@ fun ModelSettingScreen(navController: NavController, imageUri: Uri?) {
                             text = {
                                 Text(
                                     text = item,
-                                    fontSize = 18.sp,
+                                    fontSize = 14.sp,
                                     color = Color.Black
                                 )
                             },
@@ -120,7 +127,7 @@ fun ModelSettingScreen(navController: NavController, imageUri: Uri?) {
             modifier = Modifier
                 //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
                 .fillMaxWidth()
-                .padding(bottom = 10.dp),
+                .padding(bottom = paddingHeight),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             ButtonCustom(
@@ -138,14 +145,26 @@ fun ModelSettingScreen(navController: NavController, imageUri: Uri?) {
             ButtonCustom(
                 text = "OK",
                 onClick = {
-                    imageUri?.let { uri ->
-                        val selectedFolder = selectedItem.value
-                        saveImageToAppFolder(context, uri, selectedFolder,photoDao)
-                    }
-                    navController.navigate("homeScreen")
-                    Toast.makeText(context,"Add To Car List ", Toast.LENGTH_SHORT).show()
-
+                    if (!isSaving.value) {
+                        isSaving.value = true
+                        imageUri?.let { uri ->
+                            val selectedFolder = selectedItem.value
+                                saveImageToAppFolder(context, uri, selectedFolder, photoDao)
+                        }
+                        if (!LocationHelper.hasLocationPermission(context)) {
+                            val toast = Toast.makeText(
+                                context,
+                                "Image cannot be geotagged because location permission is not granted",
+                                Toast.LENGTH_SHORT
+                            )
+                            toast.setGravity(Gravity.CENTER, 0, 0)
+                            toast.show()
+                        }
+                        navController.navigate("homeScreen")
+                        Toast.makeText(context, "Add To Car List ", Toast.LENGTH_SHORT).show()
+                        }
                 },
+                enabled = !isSaving.value,
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
             )
