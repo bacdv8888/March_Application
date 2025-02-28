@@ -58,7 +58,7 @@ fun ModelSettingScreen(
     val context = LocalContext.current
     val cameraState = rememberCameraState(navController)
 
-    // Lấy database instance
+
     val database = remember { AppDatabase.getDatabase(context) }
     val photoDao = remember { database.photoDao() }
 
@@ -125,7 +125,7 @@ fun ModelSettingScreen(
         Spacer(modifier = Modifier.weight(2f))
         Row(
             modifier = Modifier
-                //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
+
                 .fillMaxWidth()
                 .padding(bottom = paddingHeight),
             horizontalArrangement = Arrangement.SpaceEvenly,

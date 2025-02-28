@@ -106,8 +106,7 @@ fun InformationCarScreen(
                 Spacer(modifier = Modifier.height(paddingHeight))
                 Column(
                     modifier = Modifier
-                        //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
-                        .verticalScroll(rememberScrollState()) // Cuộn dọc
+                        .verticalScroll(rememberScrollState())
                         .background(Color.White),
                     verticalArrangement = Arrangement.Center
                 ){
@@ -132,7 +131,6 @@ fun InformationCarScreen(
         }
         Column(
             modifier = Modifier
-                //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
                 .weight(1f)
                 .fillMaxHeight()
                 .background(Color.White)

@@ -1,15 +1,11 @@
 package com.example.marchapplication.utils
 
-import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.exifinterface.media.ExifInterface
 import com.example.marchapplication.Data.Photo
 import com.example.marchapplication.Data.PhotoDao
@@ -21,44 +17,11 @@ import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.io.OutputStream
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun saveImageToGallery(context: Context, bitmap: Bitmap): Uri? {
-    val filename = "IMG_${System.currentTimeMillis()}.jpg"
-    var imageUri: Uri? = null
-
-    try {
-        val outputStream: OutputStream?
-
-        // Android 10+ uses MediaStore to save photos
-        val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, filename)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
-        }
-
-        imageUri = context.contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues
-        )
-
-        outputStream = imageUri?.let { context.contentResolver.openOutputStream(it) }
-
-        outputStream?.use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-            out.flush()
-            Toast.makeText(context, "Photo saved to Album!", Toast.LENGTH_SHORT).show()
-        }
-
-    } catch (e: Exception) {
-        e.printStackTrace()
-        Toast.makeText(context, "Error saving image!", Toast.LENGTH_SHORT).show()
-    }
-
-    return imageUri
-}
 fun saveImageToAppFolder(
     context: Context,
     imageUri: Uri,

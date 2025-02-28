@@ -90,27 +90,6 @@ fun TextCustom(
     )
 }
 
-
-@Composable
-fun ButtonIcon(
-    onClick: () -> Unit,
-    icon: ImageVector,
-    modifier: Modifier = Modifier
-) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier
-            .size(50.dp)
-            .background(Color.White, shape = CircleShape)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = "Back",
-            tint = Color.Black,
-        )
-    }
-}
-
 @Composable
 fun ButtonIconPlay(
     isPlaying: Boolean,
@@ -132,7 +111,6 @@ fun ButtonIconPlay(
                 modifier = Modifier.size(40.dp)
             )
         } else {
-            // Dù đang tạm dừng hay chưa đọc, hiển thị icon play
             Icon(
                 imageVector = Icons.Default.PlayArrow,
                 contentDescription = "Play",

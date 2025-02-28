@@ -42,7 +42,6 @@ fun HomeScreen(navController: NavController) {
     val paddingWidth = configuration.screenWidthDp.dp * 0.06f
     Column (
         modifier = Modifier
-            //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
             .fillMaxSize()
             .background(Color.White)
             .padding(top = paddingHeight),
@@ -55,7 +54,6 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
         Row(
             modifier = Modifier
-                //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
                 .fillMaxWidth()
                 .padding(bottom = paddingHeight),
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -82,7 +80,6 @@ fun HomeScreen(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
 
         Column( modifier = Modifier
-            //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
             .padding(bottom = paddingHeight)
             .fillMaxWidth(),
             horizontalAlignment = Alignment.End

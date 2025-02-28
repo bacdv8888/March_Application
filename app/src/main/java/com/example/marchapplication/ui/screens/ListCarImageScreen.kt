@@ -59,10 +59,10 @@ fun ListCarImageScreen(
             .background(Color.White)
             .padding(top = paddingHeight),
     ) {
-        // Thanh tiêu đề
+
         Row(
             modifier = Modifier
-                //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
+
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -129,7 +129,7 @@ fun ImageGridItemWithTime(
         horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
-                //.border(2.dp, Color.Gray, shape = RoundedCornerShape(16.dp))
+
                 .padding(10.dp)
                 .fillMaxSize()
                 .aspectRatio(1f)
@@ -138,7 +138,7 @@ fun ImageGridItemWithTime(
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(File(imagePath)) // Load ảnh từ database
+                    .data(File(imagePath))
                     .crossfade(true)
                     .build(),
                 contentDescription = null,

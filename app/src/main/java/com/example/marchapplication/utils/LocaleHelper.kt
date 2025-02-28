@@ -22,7 +22,6 @@ object LocaleHelper {
             putString(LANGUAGE_KEY, language)
             apply()
         }
-        // Cập nhật giá trị cho flow
         _currentLanguageFlow.value = language
     }
 

@@ -102,35 +102,4 @@ fun createImageFile(context: Context): File {
     return File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir)
 }
 
-/*
-fun saveImageToAppFolder(context: Context, imageUri: Uri, folderName: String) {
-    try {
-        val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
-        val baseDir = File(context.filesDir, "Images/$folderName")
-        if (!baseDir.exists()) baseDir.mkdirs()
-
-        val file = File(baseDir, "IMG_${System.currentTimeMillis()}.jpg")
-        val outputStream: OutputStream = FileOutputStream(file)
-
-        inputStream?.use { input ->
-            outputStream.use { output ->
-                input.copyTo(output)
-            }
-        }
-
-        println("Image saved to ${file.absolutePath}")
-
-        // Sau khi copy xong -> ghi TAG_DATETIME vào EXIF (định dạng "yyyy:MM:dd HH:mm:ss")
-        val dateString = SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.getDefault()).format(Date(System.currentTimeMillis()))
-        val exif = ExifInterface(file.path)
-        exif.setAttribute(ExifInterface.TAG_DATETIME, dateString)
-        exif.saveAttributes()
-
-        println("Image saved to ${file.absolutePath} with EXIF TAG_DATETIME = $dateString")
-
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
-*/
 

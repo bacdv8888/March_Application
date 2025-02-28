@@ -28,6 +28,7 @@ interface PhotoDao {
     // Ghi thông tin vào hình ảnh
     @Update
     suspend fun updatePhoto(photo: Photo)
+    // Xóa ảnh
     @Delete
-    suspend fun deletePhoto(photo: Photo) // Xóa ảnh
+    suspend fun deletePhoto(photo: Photo)
 }
