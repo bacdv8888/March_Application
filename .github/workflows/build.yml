@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    env:
+      ANDROID_HOME: $HOME/Android/Sdk
+      PATH: $ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/build-tools/34.0.0:$PATH
 
     permissions:
       contents: write
@@ -25,6 +28,12 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          sdk-version: '34'
+          build-tools-version: '34.0.0'
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
@@ -50,8 +59,8 @@ jobs:
         run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 --decode > app/release-key.keystore
 
       - name: Build with Gradle
-#        run: ./gradlew assembleRelease --stacktrace --info
-        run: ./gradlew assembleRelease --warning-mode all
+        run: ./gradlew assembleRelease --stacktrace --info
+#        run: ./gradlew assembleRelease --warning-mode all
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
@@ -63,12 +72,6 @@ jobs:
 
       - name: Run unit test
         run: ./gradlew test
-
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
-        with:
-          sdk-version: '34'
-          build-tools-version: '34.0.0'
 
       - name: Enable KVM group perms
         run: |
@@ -98,9 +101,7 @@ jobs:
       - name: Install apksigner
         run: |
           sudo apt-get update
-          sudo apt-get install -y openjdk-17-jdk apksigner
-          export ANDROID_HOME=$HOME/Android/Sdk
-          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/build-tools/34.0.0:$PATH
+          sudo apt-get install -y apksigner
 
       - name: Sign APK
         run: |
