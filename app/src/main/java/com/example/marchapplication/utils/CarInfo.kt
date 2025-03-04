@@ -12,7 +12,7 @@ data class CarInfo(
 val carInfoList = listOf(
     CarInfo(
         carName = "CX-90",
-        imageResId = R.drawable.a,
+        imageResId = R.drawable.a_image,
         textEN = "The CX-90 was revealed on 31 January 2023, for the North American market," +
                 " while a release in the Australian and Middle Eastern markets occurred later during 2023." +
                 "[7][10] The CX-90 is available with a choice of six, seven, or eight-passenger seat configurations." +
@@ -35,67 +35,67 @@ val carInfoList = listOf(
     ),
     CarInfo(
         carName = "CX-80",
-        imageResId = R.drawable.b,
+        imageResId = R.drawable.b_image,
         textEN = "English text for CX-80",
         textJP = "日本語テキスト CX-80"
     ),
     CarInfo(
         carName = "CX-8",
-        imageResId = R.drawable.c,
+        imageResId = R.drawable.c_image,
         textEN = "English text for CX-8",
         textJP = "日本語テキスト CX-8"
     ),
     CarInfo(
         carName = "CX-70",
-        imageResId = R.drawable.d,
+        imageResId = R.drawable.d_image,
         textEN = "English text for CX-70",
         textJP = "日本語テキスト CX-70"
     ),
     CarInfo(
         carName = "CX-60",
-        imageResId = R.drawable.e,
+        imageResId = R.drawable.e_image,
         textEN = "English text for CX-60",
         textJP = "日本語テキスト CX-60"
     ),
     CarInfo(
         carName = "CX-50",
-        imageResId = R.drawable.f,
+        imageResId = R.drawable.f_image,
         textEN = "English text for CX-50",
         textJP = "日本語テキスト CX-50"
     ),
     CarInfo(
         carName = "CX-5",
-        imageResId = R.drawable.g,
+        imageResId = R.drawable.g_image,
         textEN = "English text for CX-5",
         textJP = "日本語テキスト CX-5"
     ),
     CarInfo(
         carName = "CX-30",
-        imageResId = R.drawable.h,
+        imageResId = R.drawable.h_image,
         textEN = "English text for CX-30",
         textJP = "日本語テキスト CX-30"
     ),
     CarInfo(
         carName = "CX-3",
-        imageResId = R.drawable.i,
+        imageResId = R.drawable.i_image,
         textEN = "English text for CX-3",
         textJP = "日本語テキスト CX-3"
     ),
     CarInfo(
         carName = "BT-50",
-        imageResId = R.drawable.k,
+        imageResId = R.drawable.k_image,
         textEN = "English text for BT-50",
         textJP = "日本語テキスト BT-50"
     ),
     CarInfo(
         carName = "MX-5",
-        imageResId = R.drawable.l,
+        imageResId = R.drawable.l_image,
         textEN = "English text for MX-5",
         textJP = "日本語テキスト MX-5"
     ),
     CarInfo(
         carName = "MX-30",
-        imageResId = R.drawable.m,
+        imageResId = R.drawable.m_image,
         textEN = "English text for MX-30",
         textJP = "日本語テキスト MX-30"
     ),

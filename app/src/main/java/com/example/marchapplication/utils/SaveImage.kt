@@ -112,18 +112,18 @@ fun saveImageToAppFolder(
 // Hàm lấy đường dẫn ảnh đại diện dựa vào folderName
 fun getAvatarForFolder(folderName: String): Int {
     val carAlbumList = listOf(
-        CarAlbum("CX-90", R.drawable.a),
-        CarAlbum("CX-80", R.drawable.b),
-        CarAlbum("CX-8", R.drawable.c),
-        CarAlbum("CX-70", R.drawable.d),
-        CarAlbum("CX-60", R.drawable.e),
-        CarAlbum("CX-50", R.drawable.f),
-        CarAlbum("CX-5", R.drawable.g),
-        CarAlbum("CX-30", R.drawable.h),
-        CarAlbum("CX-3", R.drawable.i),
-        CarAlbum("BT-50", R.drawable.k),
-        CarAlbum("MX-5", R.drawable.l),
-        CarAlbum("MX-30", R.drawable.m)
+        CarAlbum("CX-90", R.drawable.a_image),
+        CarAlbum("CX-80", R.drawable.b_image),
+        CarAlbum("CX-8", R.drawable.c_image),
+        CarAlbum("CX-70", R.drawable.d_image),
+        CarAlbum("CX-60", R.drawable.e_image),
+        CarAlbum("CX-50", R.drawable.f_image),
+        CarAlbum("CX-5", R.drawable.g_image),
+        CarAlbum("CX-30", R.drawable.h_image),
+        CarAlbum("CX-3", R.drawable.i_image),
+        CarAlbum("BT-50", R.drawable.k_image),
+        CarAlbum("MX-5", R.drawable.l_image),
+        CarAlbum("MX-30", R.drawable.m_image)
     )
     val carAlbum = carAlbumList.find { it.carName == folderName }
     return carAlbum?.imageResId ?: R.drawable.defaults
