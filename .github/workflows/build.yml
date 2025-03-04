@@ -11,9 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    env:
-      ANDROID_HOME: $HOME/Android/Sdk
-      PATH: $ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/build-tools/34.0.0:$PATH
 
     permissions:
       contents: write
@@ -102,6 +99,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y apksigner
+#          sudo apt-get install -y openjdk-17-jdk apksigner
+          export ANDROID_HOME=$HOME/Android/Sdk
+          export PATH=$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/build-tools/34.0.0:$PATH
 
       - name: Sign APK
         run: |
