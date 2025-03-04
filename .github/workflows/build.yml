@@ -94,7 +94,6 @@ jobs:
       #       adb shell settings put global transition_animation_scale 0
       #       adb shell settings put global animator_duration_scale 0
       #       ./gradlew connectedAndroidTest
-
       - name: Install apksigner
         run: |
           sudo apt-get update
