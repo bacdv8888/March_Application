@@ -78,22 +78,23 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      # - name: Start Emulator in Headless Mode
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 34
-      #     target: google_apis
-      #     arch: x86_64
-      #     profile: pixel_4
-      #     headless: true
-      #     disable-animations: true
-      #     ram-size: 4096M
-      #     script: |
-      #       adb wait-for-device
-      #       adb shell settings put global window_animation_scale 0
-      #       adb shell settings put global transition_animation_scale 0
-      #       adb shell settings put global animator_duration_scale 0
-      #       ./gradlew connectedAndroidTest
+      - name: Start Emulator in Headless Mode
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+           api-level: 34
+           target: google_apis
+           arch: x86_64
+           profile: pixel_4
+           headless: true
+           disable-animations: true
+           ram-size: 4096M
+           script: |
+             adb wait-for-device
+             adb shell settings put global window_animation_scale 0
+             adb shell settings put global transition_animation_scale 0
+             adb shell settings put global animator_duration_scale 0
+             ./gradlew connectedAndroidTest
+
       - name: Install apksigner
         run: |
           sudo apt-get update
