@@ -32,43 +32,47 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.example.marchapplication.Data.AppDatabase
 import com.example.marchapplication.ui.components.TextCustom
 import com.example.marchapplication.utils.CAR_LIST
 
-
 @Composable
-fun ListCarScreen(
-    navController: NavController) {
+fun ListCarScreen(navController: NavController) {
     val context = LocalContext.current
-
     val database = remember { AppDatabase.getDatabase(context) }
     val photoDao = remember { database.photoDao() }
-
     val configuration = LocalConfiguration.current
     val paddingHeight = configuration.screenHeightDp.dp * 0.02f
     val paddingWidth = configuration.screenWidthDp.dp * 0.06f
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
             .padding(top = paddingHeight)
+            .testTag("ListCarScreen")
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth() .padding(start = paddingWidth,bottom = paddingHeight,end = paddingWidth),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = paddingWidth, bottom = paddingHeight, end = paddingWidth),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TextCustom(
                 text = stringResource(id = R.string.car_list),
-                modifier = Modifier.padding(top = paddingHeight),
+                modifier = Modifier
+                    .padding(top = paddingHeight)
+                    .testTag("CarListText"),
                 fontSizeFactor = 0.03f
             )
-
             ButtonCustom(
                 text = "Back",
                 onClick = { navController.popBackStack() },
-                modifier = Modifier.padding(),
+                modifier = Modifier
+                    .padding()
+                    .testTag("BackButton"),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),
@@ -80,11 +84,11 @@ fun ListCarScreen(
             columns = GridCells.Fixed(4),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = paddingWidth, end = paddingWidth, bottom = paddingHeight),
+                .padding(start = paddingWidth, end = paddingWidth, bottom = paddingHeight)
+                .testTag("CarGrid"),
             contentPadding = PaddingValues(10.dp)
         ) {
             items(CAR_LIST) { carName ->
-
                 val avatarResId by photoDao.getAvatarForCar(carName).collectAsState(initial = null)
                 val imageCount by photoDao.getImageCountForCar(carName).collectAsState(initial = 0)
                 CarGridItem(
@@ -101,7 +105,6 @@ fun ListCarScreen(
     }
 }
 
-
 @Composable
 fun CarGridItem(
     folderName: String,
@@ -110,26 +113,29 @@ fun CarGridItem(
     onClick: () -> Unit
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.testTag("CarGridItem")
     ) {
         Box(
             modifier = Modifier
                 .padding(10.dp)
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clickable { onClick() },
+                .clickable { onClick() }
+                .testTag("CarImageBox")
         ) {
             Image(
                 painter = painterResource(id = avatarResId),
                 contentDescription = null,
-                modifier = Modifier.matchParentSize(),
+                modifier = Modifier.matchParentSize().testTag("CarImage"),
                 contentScale = ContentScale.Fit
             )
         }
         TextCustom(
             text = "$folderName ($imageCount Image)",
             modifier = Modifier
-                .padding(10.dp),
+                .padding(10.dp)
+                .testTag("CarImageText"),
             fontSizeFactor = 0.015f
         )
     }

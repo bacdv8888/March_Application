@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import com.example.marchapplication.utils.saveImageToAppFolder
 import com.example.marchapplication.ui.components.ButtonCustom
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.example.marchapplication.Data.AppDatabase
 import com.example.marchapplication.R
@@ -51,30 +52,31 @@ import com.example.marchapplication.utils.rememberCameraState
 @Composable
 fun ModelSettingScreen(
     navController: NavController,
-    imageUri: Uri?){
-
+    imageUri: Uri?
+) {
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf(CAR_LIST[0]) }
     val context = LocalContext.current
     val cameraState = rememberCameraState(navController)
-
-
     val database = remember { AppDatabase.getDatabase(context) }
     val photoDao = remember { database.photoDao() }
-
     val isSaving = remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val paddingHeight = configuration.screenHeightDp.dp * 0.02f
     val paddingWidth = configuration.screenWidthDp.dp * 0.06f
-    Column (
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = paddingHeight),
+            .padding(top = paddingHeight)
+            .testTag("ModelSettingScreen")
     ) {
         TextCustom(
             text = stringResource(id = R.string.car_selection),
-            modifier = Modifier.padding(start = paddingWidth),
+            modifier = Modifier
+                .padding(start = paddingWidth)
+                .testTag("CarSelectionText"),
             fontSizeFactor = 0.03f
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -82,7 +84,6 @@ fun ModelSettingScreen(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-
         ) {
             ExposedDropdownMenuBox(
                 expanded = expanded.value,
@@ -96,13 +97,15 @@ fun ModelSettingScreen(
                     modifier = Modifier
                         .menuAnchor()
                         .border(2.dp, Color.Gray)
+                        .testTag("CarDropdown")
                 )
                 DropdownMenu(
                     expanded = expanded.value,
                     onDismissRequest = { expanded.value = false },
                     modifier = Modifier
                         .border(2.dp, Color.Gray)
-                        .size(280.dp,300.dp)
+                        .size(280.dp, 300.dp)
+                        .testTag("CarDropdownMenu")
                 ) {
                     CAR_LIST.forEach { item ->
                         DropdownMenuItem(
@@ -116,7 +119,8 @@ fun ModelSettingScreen(
                             onClick = {
                                 selectedItem.value = item
                                 expanded.value = false
-                            }
+                            },
+                            modifier = Modifier.testTag("CarDropdownMenuItem")
                         )
                     }
                 }
@@ -125,7 +129,6 @@ fun ModelSettingScreen(
         Spacer(modifier = Modifier.weight(2f))
         Row(
             modifier = Modifier
-
                 .fillMaxWidth()
                 .padding(bottom = paddingHeight),
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -141,6 +144,7 @@ fun ModelSettingScreen(
                 },
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
+                modifier = Modifier.testTag("CancelButton")
             )
             ButtonCustom(
                 text = "OK",
@@ -149,7 +153,7 @@ fun ModelSettingScreen(
                         isSaving.value = true
                         imageUri?.let { uri ->
                             val selectedFolder = selectedItem.value
-                                saveImageToAppFolder(context, uri, selectedFolder, photoDao)
+                            saveImageToAppFolder(context, uri, selectedFolder, photoDao)
                         }
                         if (!LocationHelper.hasLocationPermission(context)) {
                             val toast = Toast.makeText(
@@ -162,11 +166,12 @@ fun ModelSettingScreen(
                         }
                         navController.navigate("homeScreen")
                         Toast.makeText(context, "Add To Car List ", Toast.LENGTH_SHORT).show()
-                        }
+                    }
                 },
                 enabled = !isSaving.value,
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
+                modifier = Modifier.testTag("OkButton")
             )
         }
     }

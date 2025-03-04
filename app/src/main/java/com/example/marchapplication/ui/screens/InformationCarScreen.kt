@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
@@ -77,8 +78,9 @@ fun InformationCarScreen(
         ) {
             TextCustom(
                 text = stringResource(id = R.string.details),
-                modifier = Modifier.
-                padding(start = paddingWidth, bottom = paddingHeight),
+                modifier = Modifier
+                    .padding(start = paddingWidth, bottom = paddingHeight)
+                    .testTag("DetailsText"),
                 fontSizeFactor = 0.03f
             )
             Row(
@@ -92,8 +94,8 @@ fun InformationCarScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .clip(RectangleShape)
-                        .padding(end = 20.dp, bottom = paddingHeight),
-
+                        .padding(end = 20.dp, bottom = paddingHeight)
+                        .testTag("CarImage"),
                 ) {
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
@@ -110,11 +112,25 @@ fun InformationCarScreen(
                         .background(Color.White),
                     verticalArrangement = Arrangement.Center
                 ){
-                    CustomTextField(label = "車種名:", value = carName, onValueChange = { viewModel.updateCarName(it) })
-                    CustomTextField(label = "撮影日:", value = dateCaptured)
-                    CustomTextField(label = "撮影場所:", value = location, onValueChange = { viewModel.updateLocation(it) })
-                    CustomTextField(label = "オーナー:", value = capturedBy, onValueChange = { viewModel.updateCapturedBy(it) })
-
+                    CustomTextField(
+                        label = "車種名:",
+                        value = carName,
+                        onValueChange = { viewModel.updateCarName(it) },
+                    )
+                    CustomTextField(
+                        label = "撮影日:",
+                        value = dateCaptured,
+                    )
+                    CustomTextField(
+                        label = "撮影場所:",
+                        value = location,
+                        onValueChange = { viewModel.updateLocation(it) },
+                    )
+                    CustomTextField(
+                        label = "オーナー:",
+                        value = capturedBy,
+                        onValueChange = { viewModel.updateCapturedBy(it) },
+                    )
                 }
             }
             ButtonCustom(
@@ -124,7 +140,8 @@ fun InformationCarScreen(
                     Toast.makeText(context, "Saved!", Toast.LENGTH_SHORT).show()
                 },
                 modifier = Modifier
-                    .padding(start = paddingWidth, bottom = paddingHeight),
+                    .padding(start = paddingWidth, bottom = paddingHeight)
+                    .testTag("SaveButton"),
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
             )
@@ -139,9 +156,10 @@ fun InformationCarScreen(
         ) {
             ButtonCustom(
                 text = "Back",
-                onClick = { navController.popBackStack()},
+                onClick = { navController.popBackStack() },
                 modifier = Modifier
-                    .padding(end = paddingWidth),
+                    .padding(end = paddingWidth)
+                    .testTag("BackButton"),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),
@@ -152,10 +170,11 @@ fun InformationCarScreen(
                 text = "History",
                 onClick = { navController.navigate("historicalInformationScreen/${Uri.encode(folderName)}") },
                 modifier = Modifier
-                    .padding(end = paddingWidth, bottom = paddingHeight),
+                    .padding(end = paddingWidth, bottom = paddingHeight)
+                    .testTag("HistoryButton"),
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
-                )
+            )
             ButtonCustom(
                 text = "Share",
                 onClick = {
@@ -166,10 +185,11 @@ fun InformationCarScreen(
                     }
                 },
                 modifier = Modifier
-                    .padding(end = paddingWidth, bottom = paddingHeight),
+                    .padding(end = paddingWidth, bottom = paddingHeight)
+                    .testTag("ShareButton"),
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
-                )
+            )
         }
     }
 }

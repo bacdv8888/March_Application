@@ -20,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.example.marchapplication.R
 
@@ -29,7 +30,6 @@ import com.example.marchapplication.ui.components.ButtonCustom
 
 import com.example.marchapplication.ui.components.TextCustom
 import com.example.marchapplication.utils.LocaleHelper
-
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -48,7 +48,9 @@ fun HomeScreen(navController: NavController) {
     ) {
         TextCustom(
             text = stringResource(id = R.string.catch_mazda),
-            modifier = Modifier.padding(start = paddingWidth),
+            modifier = Modifier
+                .padding(start = paddingWidth)
+                .testTag("CatchMazdaText"),
             fontSizeFactor = 0.03f
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -69,12 +71,14 @@ fun HomeScreen(navController: NavController) {
                 },
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
+                modifier = Modifier.testTag("CatchButton")
             )
             ButtonCustom(
                 text = "List",
                 onClick = { navController.navigate("listCarScreen") },
                 backgroundColor = Color(0xFFE0ECF7),
                 textColor = Color.Black,
+                modifier = Modifier.testTag("ListButton")
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -95,7 +99,9 @@ fun HomeScreen(navController: NavController) {
 
                     (context as Activity).recreate()
                 },
-                modifier = Modifier.padding(end = paddingWidth),
+                modifier = Modifier
+                    .padding(end = paddingWidth)
+                    .testTag("LanguageSwitchButton"),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),
@@ -106,5 +112,4 @@ fun HomeScreen(navController: NavController) {
 
     }
 }
-
 

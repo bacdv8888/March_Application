@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,13 +37,12 @@ import com.example.marchapplication.ViewModel.HistoricalInformationViewModel
 import com.example.marchapplication.ui.components.ButtonIconPlay
 import com.example.marchapplication.ui.components.TextCustom
 
-
 @Composable
 fun HistoricalInformationScreen(
     navController: NavController,
     folderName: String,
-    viewModel: HistoricalInformationViewModel) {
-
+    viewModel: HistoricalInformationViewModel
+) {
     val avatarResId by viewModel.avatarResId.collectAsState()
     val textEN by viewModel.textEN.collectAsState()
     val textJP by viewModel.textJP.collectAsState()
@@ -78,7 +78,9 @@ fun HistoricalInformationScreen(
         ) {
             TextCustom(
                 text = stringResource(id = R.string.history),
-                modifier = Modifier.padding(start = paddingWidth),
+                modifier = Modifier
+                    .padding(start = paddingWidth)
+                    .testTag("HistoryText"),
                 fontSizeFactor = 0.03f
             )
 
@@ -88,12 +90,12 @@ fun HistoricalInformationScreen(
                     .padding(top = paddingHeight, end = paddingHeight, start = paddingWidth)
                     .border(1.dp, Color.Gray)
                     .clip(RectangleShape)
+                    .testTag("AvatarImage")
             ) {
                 Image(
                     painter = painterResource(id = imageRes),
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
             }
@@ -105,13 +107,15 @@ fun HistoricalInformationScreen(
             ) {
                 TextCustom(
                     text = folderName,
+                    modifier = Modifier.testTag("FolderNameText")
                 )
             }
             ButtonCustom(
                 text = "Back",
                 onClick = { navController.popBackStack() },
                 modifier = Modifier
-                    .padding(start = paddingWidth, bottom = paddingHeight),
+                    .padding(start = paddingWidth, bottom = paddingHeight)
+                    .testTag("BackButton"),
                 buttonWidthFactor = 0.15f,
                 buttonHeightFactor = 0.06f,
                 backgroundColor = Color(0xFFE0ECF7),
@@ -122,7 +126,6 @@ fun HistoricalInformationScreen(
             modifier = Modifier
                 .weight(3f)
                 .fillMaxSize()
-
                 .background(Color.White),
             horizontalAlignment = Alignment.End
         ) {
@@ -137,13 +140,15 @@ fun HistoricalInformationScreen(
                     }
                 },
                 modifier = Modifier
-                    .padding(end = paddingWidth, top = paddingHeight),
+                    .padding(end = paddingWidth, top = paddingHeight)
+                    .testTag("PlayButton")
             )
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding( start =paddingHeight ,end = paddingWidth, top = paddingHeight, bottom = paddingHeight)
+                    .padding(start = paddingHeight, end = paddingWidth, top = paddingHeight, bottom = paddingHeight)
                     .verticalScroll(rememberScrollState())
+                    .testTag("ContentText")
             ) {
                 TextCustom(
                     text = if (currentLanguage == "en") textEN else textJP,
@@ -153,3 +158,4 @@ fun HistoricalInformationScreen(
         }
     }
 }
+
