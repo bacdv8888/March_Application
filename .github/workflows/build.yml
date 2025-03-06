@@ -60,7 +60,7 @@ jobs:
         if: failure()
         run: cat app/build/reports/*/*.html || true
 
-      - name: Run unit tests
+      - name: Run unit test
         run: ./gradlew test
 
       - name: Set up Android SDK
