@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -25,7 +26,8 @@ import com.example.marchapplication.ui.screens.ListCarScreen
 import com.example.marchapplication.ui.screens.ModelSettingScreen
 
 @Composable
-fun AppNavigator(modifier: Modifier = Modifier) {
+fun AppNavigator(
+    modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val historicalInformationViewModel: HistoricalInformationViewModel = viewModel()
     val carViewModel: CarViewModel = viewModel()

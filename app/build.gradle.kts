@@ -84,4 +84,11 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     // Icon
     implementation ("com.google.android.material:material:1.4.0")
+
+    // Các dependency test Android khác
+    androidTestImplementation ("androidx.test.ext:junit:1.1.3")
+    androidTestImplementation ("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation ("androidx.navigation:navigation-testing:2.5.3")
+    androidTestImplementation ("androidx.test.espresso:espresso-intents:3.4.0")
+    androidTestImplementation ("com.google.truth:truth:1.1.3")
 }

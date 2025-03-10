@@ -1,17 +1,34 @@
 package com.example.marchapplication
 
 import android.app.Application
+import android.content.Intent
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intended
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.marchapplication.ui.screens.InformationCarScreen
 import com.example.marchapplication.ViewModel.CarViewModel
+import org.hamcrest.CoreMatchers.equalTo
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.core.AllOf.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 class InformationCarScreenTest {
@@ -23,39 +40,148 @@ class InformationCarScreenTest {
     fun testInformationCarScreenComponents() {
         val application = ApplicationProvider.getApplicationContext<Application>()
         val viewModel = CarViewModel(application)
+        val imagePath = "test/path/to/saved_image.jpg"
+
+        viewModel.loadPhotoData(imagePath)
+
         composeTestRule.setContent {
             val navController = rememberNavController()
-            InformationCarScreen(navController = navController, imagePath = "test/path/to/image.jpg", viewModel = viewModel)
+            InformationCarScreen(navController = navController, imagePath = imagePath, viewModel = viewModel)
         }
 
-        // Check if TextCustom with test tag "DetailsText" is displayed
         composeTestRule.onNodeWithTag("DetailsText").assertExists()
-
-        // Check if AsyncImage with test tag "CarImage" is displayed
         composeTestRule.onNodeWithTag("CarImage").assertExists()
-
-        // Check if CustomTextField with test tag "CarNameField" is displayed
         composeTestRule.onNodeWithText("車種名:").assertExists()
-
-        // Check if CustomTextField with test tag "DateCapturedField" is displayed
         composeTestRule.onNodeWithText("撮影日:").assertExists()
-
-        // Check if CustomTextField with test tag "LocationField" is displayed
         composeTestRule.onNodeWithText("撮影場所:").assertExists()
-
-        // Check if CustomTextField with test tag "CapturedByField" is displayed
         composeTestRule.onNodeWithText("オーナー:").assertExists()
-
-        // Check if ButtonCustom with test tag "SaveButton" is displayed
         composeTestRule.onNodeWithTag("SaveButton").assertExists()
-
-        // Check if ButtonCustom with test tag "BackButton" is displayed
         composeTestRule.onNodeWithTag("BackButton").assertExists()
-
-        // Check if ButtonCustom with test tag "HistoryButton" is displayed
         composeTestRule.onNodeWithTag("HistoryButton").assertExists()
-
-        // Check if ButtonCustom with test tag "ShareButton" is displayed
         composeTestRule.onNodeWithTag("ShareButton").assertExists()
     }
+
+    @Test
+    fun testSaveButtonFunctionality() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val viewModel = CarViewModel(application)
+        val imagePath = "test/path/to/saved_image.jpg"
+
+        viewModel.loadPhotoData(imagePath)
+
+        composeTestRule.setContent {
+            val navController = rememberNavController()
+            InformationCarScreen(navController = navController, imagePath = imagePath, viewModel = viewModel)
+        }
+        // Update the fields
+        viewModel.updateCarName("Test Car")
+        viewModel.updateLocation("Test Location")
+        viewModel.updateCapturedBy("Tester")
+        // Simulate clicking the Save button
+        composeTestRule.onNodeWithTag("SaveButton").performClick()
+
+        // Verify that the photo data is updated
+        assert(viewModel.carName.value == "Test Car")
+        assert(viewModel.location.value == "Test Location")
+        assert(viewModel.capturedBy.value == "Tester")
+    }
+
+    @Test
+    fun testShareButtonFunctionality() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val viewModel = CarViewModel(application)
+
+        val imagesDir = File(application.filesDir, "Images")
+        imagesDir.mkdirs() // Tạo thư mục Images nếu chưa có
+
+        val testFile = File(imagesDir, "saved_image.jpg").apply {
+            writeText("Fake Data")
+        }
+        val imagePath = testFile.absolutePath
+
+        val testCarName = "Test Car"
+        val testDateCaptured = "2023-01-01"
+        val testLocation = "Tokyo"
+        val testCapturedBy = "Tester"
+
+        viewModel.updateCarName(testCarName)
+        viewModel.updateDateCaptured(testDateCaptured)
+        viewModel.updateLocation(testLocation)
+        viewModel.updateCapturedBy(testCapturedBy)
+        // Render UI
+        composeTestRule.setContent {
+            val navController = rememberNavController()
+            InformationCarScreen(
+                navController = navController,
+                imagePath = imagePath,
+                viewModel = viewModel
+            )
+        }
+        Intents.init()
+        composeTestRule.onNodeWithTag("ShareButton").performClick()
+        intended(
+            allOf(
+                hasAction(Intent.ACTION_CHOOSER),  // createChooser(...)
+                hasExtra(
+                    `is`(Intent.EXTRA_INTENT),
+                    allOf(
+                        hasAction(Intent.ACTION_SEND),
+                        hasType("image/*"),
+                        hasExtraWithKey(Intent.EXTRA_STREAM),
+                        hasExtra(
+                            equalTo(Intent.EXTRA_TEXT),
+                            `is`(
+                                """
+                            車種名: $testCarName
+                            撮影日: $testDateCaptured
+                            撮影場所: $testLocation
+                            オーナー: $testCapturedBy
+                            """.trimIndent()
+                            )
+                        )
+                    )
+                )
+            )
+        )
+        Intents.release()
+    }
+
+    @Test
+    fun testHistoryButtonNavigation() {
+        val application = ApplicationProvider.getApplicationContext<Application>()
+        val viewModel = CarViewModel(application)
+        val testImagePath = "some/fake/path.jpg"
+
+        val testNavController = TestNavHostController(application)
+        testNavController.navigatorProvider.addNavigator(ComposeNavigator())
+
+        composeTestRule.setContent {
+            NavHost(
+                navController = testNavController,
+                startDestination = "informationCarScreen/{imagePath}"
+            ) {
+                // Route thông tin xe
+                composable(
+                    route = "informationCarScreen/{imagePath}",
+                    arguments = listOf(navArgument("imagePath") { defaultValue = testImagePath })
+                ) {
+                    InformationCarScreen(
+                        navController = testNavController,
+                        imagePath = testImagePath,
+                        viewModel = viewModel
+                    )
+                }
+                composable("historicalInformationScreen/{folderName}") {
+                }
+            }
+        }
+        composeTestRule.onNodeWithTag("HistoryButton", useUnmergedTree = true).performClick()
+        composeTestRule.waitForIdle()
+        val currentRoute = testNavController.currentDestination?.route
+        assert(currentRoute?.startsWith("historicalInformationScreen/") == true) {
+            "Expected route starts with 'historicalInformationScreen/', but was $currentRoute"
+        }
+    }
+
+
 }

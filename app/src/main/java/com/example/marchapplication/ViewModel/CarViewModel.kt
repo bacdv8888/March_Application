@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CarViewModel(application: Application) : AndroidViewModel(application) {
+open class CarViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = AppDatabase.getDatabase(application.applicationContext)
     private val photoDao = database.photoDao()
@@ -67,6 +67,10 @@ class CarViewModel(application: Application) : AndroidViewModel(application) {
 
     fun updateCapturedBy(newCapturedBy: String) {
         _capturedBy.value = newCapturedBy
+    }
+
+    fun updateDateCaptured(newDate: String) {
+        _dateCaptured.value = newDate
     }
 
     // List Car Image

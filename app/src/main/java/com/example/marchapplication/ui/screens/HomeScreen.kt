@@ -44,7 +44,8 @@ fun HomeScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
-            .padding(top = paddingHeight),
+            .padding(top = paddingHeight)
+            .testTag("HomeScreen")
     ) {
         TextCustom(
             text = stringResource(id = R.string.catch_mazda),

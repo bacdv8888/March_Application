@@ -45,13 +45,11 @@ fun saveImageToAppFolder(
             else -> 0f
         }
 
-        // Rotate the image if necessary
         val rotatedBitmap = if (rotationAngle != 0f) {
             rotateBitmap(bitmap, rotationAngle)
         } else {
             bitmap
         }
-
 
         val baseDir = File(context.filesDir, "Images/$folderName")
         if (!baseDir.exists()) baseDir.mkdirs()
