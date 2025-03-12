@@ -38,7 +38,6 @@ class HistoricalInformationScreenTest {
                 viewModel = viewModel
             )
         }
-        // Check UI components
         composeTestRule.onNodeWithTag("HistoryText").assertExists()
         composeTestRule.onNodeWithTag("AvatarImage").assertExists()
         composeTestRule.onNodeWithTag("FolderNameText").assertExists()
@@ -46,7 +45,6 @@ class HistoricalInformationScreenTest {
         composeTestRule.onNodeWithTag("PlayButton").assertExists()
         composeTestRule.onNodeWithTag("ContentText").assertExists()
     }
-
     @Test
     fun testLoadCarDataShowsFolderName() = runTest {
         val application = ApplicationProvider.getApplicationContext<Application>()
@@ -85,12 +83,9 @@ class HistoricalInformationScreenTest {
                 viewModel = viewModel
             )
         }
-
         composeTestRule.onNodeWithTag("PlayButton").performClick()
-
         composeTestRule.waitForIdle()
         assertTrue(viewModel.isPlaying.value)
-
         composeTestRule.onNodeWithTag("PlayButton").performClick()
         composeTestRule.waitForIdle()
         assertFalse(viewModel.isPlaying.value)

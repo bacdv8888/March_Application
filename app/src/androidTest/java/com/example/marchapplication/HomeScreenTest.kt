@@ -39,7 +39,6 @@ class HomeScreenTest {
             val navController = rememberNavController()
             HomeScreen(navController = navController)
         }
-
         composeTestRule.onNodeWithTag("CatchMazdaText").assertExists()
         composeTestRule.onNodeWithTag("CatchButton").assertExists()
         composeTestRule.onNodeWithTag("ListButton").assertExists()
@@ -57,10 +56,8 @@ class HomeScreenTest {
             composeTestRule.setContent {
                 HomeScreen(navController = navController)
             }
-            // Wait for the UI to become idle
             composeTestRule.waitForIdle()
             composeTestRule.onNodeWithTag("CatchButton", useUnmergedTree = true).performClick()
-
             intended(hasAction(MediaStore.ACTION_IMAGE_CAPTURE))
         } finally {
             Intents.release()
@@ -74,7 +71,6 @@ class HomeScreenTest {
         composeTestRule.setContent {
             HomeScreen(navController = navController)
         }
-
         val currentLanguage = LocaleHelper.getSavedLanguage(context)
         composeTestRule.onNodeWithTag("LanguageSwitchButton")
             .assertExists()
@@ -88,10 +84,11 @@ class HomeScreenTest {
         composeTestRule.setContent {
             AppNavigator()
         }
-
-        composeTestRule.onNodeWithTag("ListButton", useUnmergedTree = true)
-            .performClick()
+        composeTestRule.onNodeWithTag("ListButton", useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag("ListCarScreen").assertExists()
+        composeTestRule.onNodeWithTag("BackButton", useUnmergedTree = true).performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("CatchMazdaText").assertExists()
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.navigation.NavType
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,6 +23,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.marchapplication.ui.screens.InformationCarScreen
 import com.example.marchapplication.ViewModel.CarViewModel
+import com.example.marchapplication.ViewModel.HistoricalInformationViewModel
+import com.example.marchapplication.ui.screens.HistoricalInformationScreen
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.core.AllOf.allOf
@@ -73,14 +76,11 @@ class InformationCarScreenTest {
             val navController = rememberNavController()
             InformationCarScreen(navController = navController, imagePath = imagePath, viewModel = viewModel)
         }
-        // Update the fields
         viewModel.updateCarName("Test Car")
         viewModel.updateLocation("Test Location")
         viewModel.updateCapturedBy("Tester")
-        // Simulate clicking the Save button
         composeTestRule.onNodeWithTag("SaveButton").performClick()
 
-        // Verify that the photo data is updated
         assert(viewModel.carName.value == "Test Car")
         assert(viewModel.location.value == "Test Location")
         assert(viewModel.capturedBy.value == "Tester")
@@ -92,7 +92,7 @@ class InformationCarScreenTest {
         val viewModel = CarViewModel(application)
 
         val imagesDir = File(application.filesDir, "Images")
-        imagesDir.mkdirs() // Tạo thư mục Images nếu chưa có
+        imagesDir.mkdirs()
 
         val testFile = File(imagesDir, "saved_image.jpg").apply {
             writeText("Fake Data")
@@ -108,7 +108,6 @@ class InformationCarScreenTest {
         viewModel.updateDateCaptured(testDateCaptured)
         viewModel.updateLocation(testLocation)
         viewModel.updateCapturedBy(testCapturedBy)
-        // Render UI
         composeTestRule.setContent {
             val navController = rememberNavController()
             InformationCarScreen(
@@ -121,7 +120,7 @@ class InformationCarScreenTest {
         composeTestRule.onNodeWithTag("ShareButton").performClick()
         intended(
             allOf(
-                hasAction(Intent.ACTION_CHOOSER),  // createChooser(...)
+                hasAction(Intent.ACTION_CHOOSER),
                 hasExtra(
                     `is`(Intent.EXTRA_INTENT),
                     allOf(
@@ -150,17 +149,16 @@ class InformationCarScreenTest {
     fun testHistoryButtonNavigation() {
         val application = ApplicationProvider.getApplicationContext<Application>()
         val viewModel = CarViewModel(application)
-        val testImagePath = "some/fake/path.jpg"
-
-        val testNavController = TestNavHostController(application)
-        testNavController.navigatorProvider.addNavigator(ComposeNavigator())
-
+        val historicalInformationViewModel = HistoricalInformationViewModel(application)
+        val testImagePath = "dummy/TestFolder/image.jpg"
+        val testNavController = TestNavHostController(application).apply {
+            navigatorProvider.addNavigator(ComposeNavigator())
+        }
         composeTestRule.setContent {
             NavHost(
                 navController = testNavController,
                 startDestination = "informationCarScreen/{imagePath}"
             ) {
-                // Route thông tin xe
                 composable(
                     route = "informationCarScreen/{imagePath}",
                     arguments = listOf(navArgument("imagePath") { defaultValue = testImagePath })
@@ -171,17 +169,26 @@ class InformationCarScreenTest {
                         viewModel = viewModel
                     )
                 }
-                composable("historicalInformationScreen/{folderName}") {
+                composable(
+                    route = "historicalInformationScreen/{folderName}",
+                    arguments = listOf(navArgument("folderName") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val folderName = backStackEntry.arguments?.getString("folderName") ?: ""
+                    HistoricalInformationScreen(
+                        navController = testNavController,
+                        folderName = folderName,
+                        viewModel = historicalInformationViewModel
+                    )
                 }
             }
         }
-        composeTestRule.onNodeWithTag("HistoryButton", useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
-        val currentRoute = testNavController.currentDestination?.route
-        assert(currentRoute?.startsWith("historicalInformationScreen/") == true) {
-            "Expected route starts with 'historicalInformationScreen/', but was $currentRoute"
-        }
+        composeTestRule.onNodeWithTag("DetailsText", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithTag("HistoryButton", useUnmergedTree = true).assertExists().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("HistoryText", useUnmergedTree = true).assertExists()
+        composeTestRule.onNodeWithTag("BackButton", useUnmergedTree = true).assertExists().performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag("DetailsText", useUnmergedTree = true).assertExists()
     }
-
-
 }

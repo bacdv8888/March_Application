@@ -32,13 +32,13 @@
       <SelectionState runConfigName="ListCarImageScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testListCarScreenComponents()">
+      <SelectionState runConfigName="testClickFolderNavigatesToListCarImageScreen()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ListCarScreenTest">
+      <SelectionState runConfigName="testListButtonNavigatesToListCarScreen()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testBackButtonPopBackStack()">
+      <SelectionState runConfigName="testHistoryButtonNavigation()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

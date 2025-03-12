@@ -75,7 +75,6 @@ class ModelSettingScreenTest {
         val testNavController = TestNavHostController(context).apply {
             navigatorProvider.addNavigator(ComposeNavigator())
         }
-
         composeTestRule.setContent {
             NavHost(
                 navController = testNavController,
@@ -89,10 +88,8 @@ class ModelSettingScreenTest {
                 }
             }
         }
-
         composeTestRule.onNodeWithTag("OkButton", useUnmergedTree = true).performClick()
         composeTestRule.waitForIdle()
-
         composeTestRule.onNodeWithTag("HomeScreen", useUnmergedTree = true).assertExists()
     }
 
